@@ -12,3 +12,9 @@ x.x.x.x #host name
 [container]
 x.x.x.x #host name
 ```
+
+How to run a playbook 
+
+```
+ansible-playbook -i inventory.ini <playbook name>
+```
