@@ -1,0 +1,14 @@
+- name: Gather_Facts
+  hosts: all
+  vars:
+    logfile: "/tmp/logfile"
+    loghost: "localhost"
+  tasks:
+    - name: write info to file
+      lineinfile:
+        create: true
+        state: present
+        path: "{{ logfile }}"
+        line: "{{ ansible_hostname }} {{ ansible_kernel }} {{ ansible_distribution }} {{ ansible_default_ipv4.address }}"
+        regexp: "^{{ ansible_hostname }}[[:space:]].*^{{ ansible_kernel }}[[:space:]].*"
+      delegate_to: "{{ loghost }}"
