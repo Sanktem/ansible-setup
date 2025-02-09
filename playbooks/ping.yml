@@ -6,3 +6,11 @@
     - name: ping a host
       ping:
 
+    - name: Send a message
+      ansible.builtin.shell:
+        cmd: bash send_telegram.sh "Pings are complete"
+        chdir: ~/ansible-setup
+      delegate_to: localhost
+      run_once: true
+    
+
