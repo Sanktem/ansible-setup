@@ -37,5 +37,6 @@ To setup the nodejs server for the inv site, all the node files that are needed 
 cd inventory-site
 npm init -y
 npm install express
+npm install cors
 node server.js
 ```
