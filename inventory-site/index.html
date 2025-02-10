@@ -46,8 +46,6 @@
     <button onclick="gatherData()">Gather Data</button>
 </div>
 
-<br><br>
-
 <table id="myTable">
     <thead>
         <tr>
@@ -104,13 +102,19 @@ document.querySelectorAll("#myTable th").forEach((th, index) => {
   th.addEventListener("click", () => sortTable(index));
 });
 
-loadAndDisplayData('logfile.txt');
-
 function gatherData() {
-    const tbody = document.querySelector("#myTable tbody");
-    tbody.innerHTML = ""; // Clear current data
-    loadAndDisplayData('logfile.txt'); // Reload data from logfile
+    fetch('http://localhost:3000/gatherData')
+        .then(response => response.text())
+        .then(message => {
+            console.log(message);
+            const tbody = document.querySelector("#myTable tbody");
+            tbody.innerHTML = ""; // Clear current data
+            loadAndDisplayData('logfile.txt'); // Reload data from logfile
+        })
+        .catch(error => console.error("Error gathering data:", error));
 }
+
+loadAndDisplayData('logfile.txt');
 
 </script>
 

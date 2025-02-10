@@ -25,4 +25,17 @@ To run the telegram message system that is encrypted is:
 
 ```
 ansible-playbook --extra-vars 'message="whatever the message is"' playbooks/telegram_test.yml --vault-password-file pass.txt
+
+or 
+
+sh send_telegram $1
+```
+
+To setup the nodejs server for the inv site, all the node files that are needed are hidden, because I dont want to upload them
+
+```
+cd inventory-site
+npm init -y
+npm install express
+node server.js
 ```
