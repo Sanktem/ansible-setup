@@ -1,0 +1,16 @@
+Hostname Kernel OS OS_Family IP
+wonderland 6.5.13-5-pve Debian Debian 192.168.1.13
+minecraft-ddss 6.8.0-52-generic Ubuntu Debian 192.168.1.11
+minecraft-darkrpg 5.15.0-131-generic Ubuntu Debian 192.168.1.111
+server1 5.14.0-503.22.1.el9_5.x86_64 RedHat RedHat 192.168.1.32
+server2 5.14.0-503.22.1.el9_5.x86_64 RedHat RedHat 192.168.1.37
+nginxproxymanager 6.5.13-5-pve Debian Debian 192.168.1.30
+AWX 6.5.13-5-pve CentOS RedHat 192.168.1.39
+fileserver 6.5.13-5-pve Debian Debian 192.168.1.15
+adguard 6.5.13-5-pve Debian Debian 192.168.1.25
+docker 6.5.13-5-pve Debian Debian 192.168.1.27
+ansible 6.5.13-5-pve Debian Debian 192.168.1.33
+homeassistant 6.5.13-5-pve Debian Debian 192.168.1.9
+plex 6.5.13-5-pve Ubuntu Debian 192.168.1.40
+NextCloud 6.5.13-5-pve Debian Debian 192.168.1.10
+octiprint 5.15.0-131-generic Ubuntu Debian 192.168.1.16
