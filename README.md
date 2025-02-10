@@ -28,7 +28,7 @@ ansible-playbook --extra-vars 'message="whatever the message is"' playbooks/tele
 
 or 
 
-sh send_telegram $1
+sh send_telegram $1 (This has two files telegram_token.txt, and chat_id.txt that you will need to put the token IDs)
 ```
 
 To setup the nodejs server for the inv site, all the node files that are needed are hidden, because I dont want to upload them
