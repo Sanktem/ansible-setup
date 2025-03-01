@@ -15,3 +15,14 @@ NextCloud 6.5.13-5-pve Debian Debian 192.168.1.10
 octiprint 5.15.0-131-generic Ubuntu Debian 192.168.1.16
 Hostname Kernel OS OS_Family IP
 docker02 6.5.13-5-pve Debian Debian 192.168.1.48
+wonderland 6.8.12-8-pve Debian Debian 192.168.1.13
+server1 5.14.0-503.23.1.el9_5.x86_64 RedHat RedHat 192.168.1.32
+server2 5.14.0-503.23.1.el9_5.x86_64 RedHat RedHat 192.168.1.37
+docker 6.8.12-8-pve Debian Debian 192.168.1.27
+homeassistant 6.8.12-8-pve Debian Debian 192.168.1.9
+docker02 6.8.12-8-pve Debian Debian 192.168.1.48
+NextCloud 6.8.12-8-pve Debian Debian 192.168.1.10
+ansible 6.8.12-8-pve Debian Debian 192.168.1.33
+fileserver 6.8.12-8-pve Debian Debian 192.168.1.15
+plex 6.8.12-8-pve Ubuntu Debian 192.168.1.40
+lldap 6.8.12-8-pve Debian Debian 192.168.1.17

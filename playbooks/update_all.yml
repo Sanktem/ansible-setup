@@ -1,5 +1,7 @@
 ---
-- hosts: all
+- hosts: vm container
+  become: true
+  become_user: root
   tasks:
   - name: Update all installed packages using dnf module
     dnf:
@@ -28,3 +30,17 @@
     apt:
       autoremove: yes
     when: ansible_facts['os_family'] == "Debian"
+
+  - name: Check Reboot if necessary
+    register: reboot_required_file
+    stat: path=/var/run/reboot-required get_md5=no
+
+
+  - name: Reboot if needed
+    reboot:
+      msg: "Reboot needed do not resist"
+      connect_timeout: 5
+      reboot_timeout: 300
+      pre_reboot_delay: 0
+      test_command: uptime
+    when: reboot_required_file.stat.exists

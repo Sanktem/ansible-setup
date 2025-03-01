@@ -1,20 +1,12 @@
 - name: Gather_Facts
   hosts: all
   vars:
-    logfile: "~/ansible-setup/inventory-site/logfile.txt"
+    logfile: "../logfile.txt"
     loghost: "localhost"
   tasks:
-    - name: add a header
-      lineinfile:
-        create: true
-        state: present
-        path: "{{ logfile }}"
-        line: "Hostname Kernel OS OS_Family IP"
-      delegate_to: "{{ loghost }}"
-      run_once: true
-
     - name: write info to file
       lineinfile:
+        create: true
         state: present
         path: "{{ logfile }}"
         line: "{{ ansible_hostname }} {{ ansible_kernel }} {{ ansible_distribution }} {{ ansible_os_family }} {{ ansible_default_ipv4.address }}"
