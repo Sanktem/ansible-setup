@@ -5,10 +5,10 @@ TBH there are lots of hidden files lol, password files, inv files ect
 Hidden File called inventory.ini, set as the following
 
 ```
-[DEB]
+[speical]
 x.x.x.x #host name
 
-[REHL]
+[vm]
 x.x.x.x #host name
 
 [container]
