@@ -13,3 +13,5 @@ homeassistant 6.5.13-5-pve Debian Debian 192.168.1.9
 plex 6.5.13-5-pve Ubuntu Debian 192.168.1.40
 NextCloud 6.5.13-5-pve Debian Debian 192.168.1.10
 octiprint 5.15.0-131-generic Ubuntu Debian 192.168.1.16
+Hostname Kernel OS OS_Family IP
+docker02 6.5.13-5-pve Debian Debian 192.168.1.48
