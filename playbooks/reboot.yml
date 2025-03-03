@@ -1,0 +1,5 @@
+- name: Reboot the servers
+  hosts: container
+  tasks:
+    - name: reboot
+      reboot:
