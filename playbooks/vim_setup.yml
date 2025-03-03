@@ -1,0 +1,39 @@
+- hosts: all
+  tasks:
+    - name: Install vim/git redhat
+      apt:
+        name: 
+          - vim 
+          - git
+        state: latest
+      when: ansible_facts['os_family'] == "RedHat"
+
+    - name: Install vim/git debian
+      apt:
+        name: 
+          - vim 
+          - git
+        state: latest
+      when: ansible_facts['os_family'] == "Debian"
+
+    - name: Install vim/git archlinux
+      pacman:
+        name: 
+          - vim 
+          - git
+        state: latest
+      when: ansible_facts['os_family'] == "Archlinux"
+
+    - name: Clone the git from amix/vimrc for all users
+      git:
+        repo: https://github.com/amix/vimrc.git
+        dest: /opt/vim_runtime
+        clone: yes
+        update: yes 
+
+    - name: install the config for vim
+      ansible.builtin.shell: sh /opt/vim_runtime/install_awesome_parameterized.sh /opt/vim_runtime root sanktem
+      args: 
+        chdir: /opt/vim_runtime
+
+
