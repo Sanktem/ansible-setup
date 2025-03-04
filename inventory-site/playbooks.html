@@ -39,7 +39,7 @@
 <script>
 function loadPlaybooks() {
     console.log('Fetching playbooks...');
-    fetch('http://localhost:3000/playbooks')
+    fetch('http://192.168.1.28:3000/playbooks')
         .then(response => {
             console.log('Response received:', response);
             return response.json();
@@ -62,7 +62,7 @@ function loadPlaybooks() {
 }
 
 function loadPlaybookContent(playbookName) {
-    fetch(`http://localhost:3000/playbook/${playbookName}`)
+    fetch(`http://192.168.1.28:3000/playbook/${playbookName}`)
         .then(response => response.text())
         .then(content => {
             document.getElementById('playbookContent').textContent = content;

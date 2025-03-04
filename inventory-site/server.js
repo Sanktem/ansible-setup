@@ -21,7 +21,7 @@ app.get('/gatherData', (req, res) => {
 app.use(express.static('public'));
 
 app.get('/playbooks', (req, res) => {
-    const playbooksDir = '/Users/dalescott/ansible-setup/playbooks';
+    const playbooksDir = '/root/ansible-setup/playbooks';
     fs.readdir(playbooksDir, (err, files) => {
         if (err) {
             console.error(`Error reading directory: ${err}`);
@@ -41,7 +41,7 @@ app.get('/playbooks', (req, res) => {
 });
 
 app.get('/playbook/:name', (req, res) => {
-    const playbooksDir = '/Users/dalescott/ansible-setup/playbooks';
+    const playbooksDir = '/root/ansible-setup/playbooks';
     const filePath = path.join(playbooksDir, req.params.name + '.yml');
     fs.readFile(filePath, 'utf8', (err, data) => {
         if (err) {
