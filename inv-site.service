@@ -1,0 +1,12 @@
+[Unit]
+Description = Inv-Site node.js server
+After=network.target
+
+[Service]
+User=root
+WorkingDirectory=/var/www/inventory-site/
+ExecStart=/usr/bin/node server.js
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
