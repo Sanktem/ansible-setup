@@ -1,5 +1,5 @@
 - name: Reboot the servers
-  hosts: container
+  hosts: vm container
   tasks:
     - name: reboot
       reboot:
