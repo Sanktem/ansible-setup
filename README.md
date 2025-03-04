@@ -1,5 +1,6 @@
-# ansible-setup
+# Ansible Server files
 
+This is just a collection of ansible playbooks and a website that displays info. Good luck trying to figureout if there is anything good there. I also have some documentation here for me so it may not make a lot of sense.
 *TBH there are lots of hidden files lol, password files, inv files ect*
 
 ## Current tasks (This is also things that I'm just doing)
@@ -22,7 +23,7 @@ x.x.x.x #host name
 x.x.x.x #host name
 ```
 
-### How to run a playbook:
+### How to run a playbook (and other interesting things):
 
 ```
 ansible-playbook -i inventory.ini <playbook name>
