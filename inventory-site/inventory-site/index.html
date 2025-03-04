@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory Site</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="sidebar">
+    <a href="index.html">Inventory</a>
+    <a href="playbooks.html">Playbooks</a>
+    <a href="#notification">Notification</a>
+</div>
+
+<div class="main-content">
+    <div class="header-container">
+        <h1>Ansible Inventory</h1>
+        <button onclick="gatherData()">Gather Data</button>
+    </div>
+    <br>
+    <table id="myTable">
+        <thead>
+            <tr>
+                <th>Hostname</th>
+                <th>Kernel</th>
+                <th>OS</th>
+                <th>OS Family</th>
+                <th>IP Address</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</div>
+
+
+<script>
+    function loadAndDisplayData(filePath) {
+      fetch(filePath)
+        .then(response => response.text())
+        .then(data => {
+          const table = document.getElementById("myTable");
+          const lines = data.split('\n');
+    
+          const tbody = table.querySelector("tbody");
+          for (let i = 1; i < lines.length; i++) {
+            const rowData = lines[i].split(' '); // Split by space
+            if (rowData.length === 5) { // Ensure there are 5 columns
+              let row = tbody.insertRow();
+              rowData.forEach(cellData => {
+                let cell = row.insertCell();
+                cell.textContent = cellData;
+              });
+            }
+          }
+        })
+        .catch(error => console.error("Error loading file:", error));
+    }
+    
+    function sortTable(columnIndex) {
+      const table = document.getElementById("myTable");
+      const tbody = table.querySelector("tbody");
+      const rows = Array.from(tbody.rows);
+    
+      const sortedRows = rows.sort((a, b) => {
+        const aText = a.cells[columnIndex].textContent.trim();
+        const bText = b.cells[columnIndex].textContent.trim();
+        return aText.localeCompare(bText);
+      });
+    
+      tbody.innerHTML = "";
+      sortedRows.forEach(row => tbody.appendChild(row));
+    }
+    
+    document.querySelectorAll("#myTable th").forEach((th, index) => {
+      th.addEventListener("click", () => sortTable(index));
+    });
+    
+    function gatherData() {
+        fetch('http://localhost:3000/gatherData')
+            .then(response => response.text())
+            .then(message => {
+                console.log(message);
+                const tbody = document.querySelector("#myTable tbody");
+                tbody.innerHTML = ""; // Clear current data
+                loadAndDisplayData('logfile.txt'); // Reload data from logfile
+            })
+            .catch(error => console.error("Error gathering data:", error));
+    }
+    
+    loadAndDisplayData('logfile.txt');
+</script>
+</body>
+</html>

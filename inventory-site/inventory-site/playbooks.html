@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Playbooks</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="sidebar">
+    <a href="index.html">Inventory</a>
+    <a href="playbooks.html">Playbooks</a>
+    <a href="#notification">Notification</a>
+</div>
+
+<div class="main-content">
+    <div class="header-container">
+        <h1>Playbooks</h1>
+    </div>
+    <br>
+    <table id="playbooksTable">
+        <thead>
+            <tr>
+                <th onclick="sortTable(0)">Playbook name</th>
+                <th onclick="sortTable(1)">Last Modified</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</div>
+
+<div class="text-display" id="textDisplay">
+    <h2>Playbook Content</h2>
+    <pre id="playbookContent"></pre>
+</div>
+
+<script>
+function loadPlaybooks() {
+    console.log('Fetching playbooks...');
+    fetch('http://192.168.1.28:3000/playbooks')
+        .then(response => {
+            console.log('Response received:', response);
+            return response.json();
+        })
+        .then(playbooks => {
+            console.log('Playbooks data:', playbooks);
+            const tableBody = document.getElementById('playbooksTable').querySelector('tbody');
+            tableBody.innerHTML = ''; // Clear existing rows
+            playbooks.forEach(playbook => {
+                let row = tableBody.insertRow();
+                let nameCell = row.insertCell(0);
+                let dateCell = row.insertCell(1);
+                nameCell.textContent = playbook.name;
+                dateCell.textContent = new Date(playbook.lastModified).toLocaleString();
+                row.addEventListener('click', () => loadPlaybookContent(playbook.name));
+                console.log('Inserted playbook:', playbook.name);
+            });
+        })
+        .catch(error => console.error('Error loading playbooks:', error));
+}
+
+function loadPlaybookContent(playbookName) {
+    fetch(`http://192.168.1.28:3000/playbook/${playbookName}`)
+        .then(response => response.text())
+        .then(content => {
+            document.getElementById('playbookContent').textContent = content;
+        })
+        .catch(error => console.error('Error loading playbook content:', error));
+}
+
+function sortTable(columnIndex) {
+    const table = document.getElementById('playbooksTable');
+    const tbody = table.querySelector('tbody');
+    const rows = Array.from(tbody.rows);
+
+    const sortedRows = rows.sort((a, b) => {
+        const aText = a.cells[columnIndex].textContent.trim();
+        const bText = b.cells[columnIndex].textContent.trim();
+        return aText.localeCompare(bText);
+    });
+
+    tbody.innerHTML = '';
+    sortedRows.forEach(row => tbody.appendChild(row));
+}
+
+document.addEventListener('DOMContentLoaded', loadPlaybooks);
+</script>
+
+</body>
+</html>
