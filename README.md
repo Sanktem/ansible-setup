@@ -1,8 +1,15 @@
 # ansible-setup
 
-TBH there are lots of hidden files lol, password files, inv files ect
+*TBH there are lots of hidden files lol, password files, inv files ect*
 
-Hidden File called inventory.ini, set as the following
+## Current tasks (This is also things that I'm just doing)
+- [  ] Build a playbook to install a samaba server
+- [  ] Migrate the ansible server to a cleaner server
+- [  ] Migrate the file server to a cleaner server
+- [  ] Create a better shell config and create a playbook to deploy it
+- [  ] Build a better notification server
+
+### Hidden File called inventory.ini, set as the following
 
 ```
 [speical]
@@ -15,13 +22,14 @@ x.x.x.x #host name
 x.x.x.x #host name
 ```
 
-How to run a playbook:
+### How to run a playbook:
 
 ```
 ansible-playbook -i inventory.ini <playbook name>
 ```
 
 To run the telegram message system that is encrypted is:
+* I'm going to setup a different way to notify me about issues
 
 ```
 ansible-playbook --extra-vars 'message="whatever the message is"' playbooks/telegram_test.yml --vault-password-file pass.txt
@@ -32,6 +40,8 @@ sh send_telegram $1 (This has two files telegram_token.txt, and chat_id.txt that
 ```
 
 To setup the nodejs server for the inv site, all the node files that are needed are hidden, because I dont want to upload them
+* There is a "script" that should move all the files for an apache2 sever
+* I have a bit more that I want to add to the site like a logging file, and setting up sechudualed tasks
 
 ```
 cd inventory-site

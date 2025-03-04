@@ -1,0 +1,27 @@
+- name: Checks if the minecraft server is online, and if not starts it
+  hosts: vm
+  become: true
+  tasks:
+    - name: check if the server is online
+      ansible.builtin.systemd:
+        name: "root@java"
+      register: mc_server_status
+
+    - debug:
+        var: mc_server_status.status.ActiveState
+
+    - name: let me know that the server is not running
+      ansible.builtin.shell:
+        cmd: bash send_telegram.sh "GTNH is not running going to try to start the server"
+        chdir: ~/ansible-setup
+      delegate_to: localhost
+      when: mc_server_status.status.ActiveState = "inactive"
+      run_once: true
+
+    - name: try to start the server
+      ansible.builtin.shell:
+        cmd: bash startserver-java9.sh
+        chdir: /home/sanktem/gregging
+      delegate_to: 192.168.1.22
+      when: mc_server_status.status.ActiveState = "inactive"
+      run_once: true
