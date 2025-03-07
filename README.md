@@ -10,6 +10,11 @@ This is just a collection of ansible playbooks and a website that displays info.
 - [  ] Create a better shell config and create a playbook to deploy it
 - [  ] Build a better notification server
 
+### Installed packages on this server
+```
+apt install git vim curl python3-pip apache2 nodejs cifs-utils psmisc
+```
+
 ### Hidden File called inventory.ini, set as the following
 
 ```
