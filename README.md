@@ -12,7 +12,7 @@ This is just a collection of ansible playbooks and a website that displays info.
 
 ### Installed packages on this server
 ```
-apt install git vim curl python3-pip apache2 nodejs cifs-utils psmisc
+apt install git vim curl python3-pip apache2 nodejs cifs-utils psmisc npm
 ```
 
 ### Hidden File called inventory.ini, set as the following
