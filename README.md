@@ -4,11 +4,12 @@ This is just a collection of ansible playbooks and a website that displays info.
 *TBH there are lots of hidden files lol, password files, inv files ect*
 
 ## Current tasks (This is also things that I'm just doing)
-- [  ] Build a playbook to install a samaba server
-- [  ] Migrate the ansible server to a cleaner server
-- [  ] Migrate the file server to a cleaner server
-- [  ] Create a better shell config and create a playbook to deploy it
-- [  ] Build a better notification server
+- [ ] Build a playbook to install a samaba server
+- [X] Migrate the ansible server to a cleaner server
+- [ ] Migrate the file server to a cleaner server
+- [ ] Create a better shell config and create a playbook to deploy it
+- [ ] Build a better notification server
+- [ ] Fix the IP address's of all the servers
 
 ### Installed packages on this server
 ```
