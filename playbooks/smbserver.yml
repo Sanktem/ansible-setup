@@ -1,0 +1,26 @@
+- name: creates smb server
+  hosts: all
+  become: true
+  tasks:
+    - name: install samba
+      package:
+        name: samba
+        state: present
+
+    - name: Creates the share file
+      file:
+        path: /srv/samba/shared
+        state: directory
+        mode: '0755'
+
+    - name: configure smb.conf
+      template:
+        src: /root/ansible-setup/defualt-settings/smb.conf.j2
+        dest: /etc/samba/smb.conf
+      notify: restart samba
+
+  handlers:
+    - name: restart samba
+      service:
+        name: smbd
+        state: restarted
