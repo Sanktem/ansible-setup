@@ -1,0 +1,23 @@
+ - name: setup fstab to add the file server
+   hosts: all
+   become: true
+   gather_facts: false
+   tasks: 
+     - name: create the share file
+       file:
+         path: /mnt/share
+         state: directory
+         mode: '0755'
+     
+     - name: copy creds file
+       copy:
+         src: /root/ansible-setup/files/smbcreds
+         dest: /opt/smbcreds
+         mode: '0600'
+
+     - name: add the line to the fs tab
+       command: echo '//192.168.1.7/share /mnt/share cifs credentials=/opt/smbcreds,uid=1000,gid=1000 0 0' >> /etc/fstab
+
+     - name: reload the daemon
+       systemd_service:
+         daemon_reload: true

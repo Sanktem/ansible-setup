@@ -1,10 +1,11 @@
 - name: Checks if the minecraft server is online, and if not starts it
   hosts: vm
+  gather_facts: false
   become: true
   tasks:
     - name: check if the server is online
-      ansible.builtin.systemd:
-        name: "root@java"
+      community.general.pids:
+        name: java
       register: mc_server_status
 
     - debug:
