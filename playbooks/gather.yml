@@ -1,7 +1,7 @@
 - name: Gather_Facts
   hosts: all
   vars:
-    logfile: "/var/www/inventory-site/logfile.txt"
+    logfile: "../logfile.txt"
     loghost: "localhost"
   tasks:
     - name: write info to file
