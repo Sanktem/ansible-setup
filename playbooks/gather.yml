@@ -4,11 +4,24 @@
     logfile: "../logfile.txt"
     loghost: "localhost"
   tasks:
+
+    - name: Get disk usage for root filesystem
+      command: df -h /
+      register: disk_usage
+
+    - name: Extract percent used from df output
+      set_fact:
+        percent_used: "{{ disk_usage.stdout_lines[1].split()[4] }}"
+
+    - name: Extract total from df output
+      set_fact:
+        total_disk: "{{ disk_usage.stdout_lines[1].split()[1]}}"
+
     - name: write info to file
       lineinfile:
         create: true
         state: present
         path: "{{ logfile }}"
-        line: "{{ ansible_hostname }} {{ ansible_kernel }} {{ ansible_distribution }} {{ ansible_os_family }} {{ ansible_default_ipv4.address }}"
+        line: "{{ ansible_hostname }} {{ ansible_kernel }} {{ ansible_distribution }} {{ ansible_os_family }} {{ percent_used }} {{ total_disk }} {{ ansible_default_ipv4.address }}"
         regexp: "^{{ ansible_hostname }}[[:space:]].*^{{ ansible_kernel }}[[:space:]].*"
       delegate_to: "{{ loghost }}"

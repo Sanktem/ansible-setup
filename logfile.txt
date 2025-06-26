@@ -1,15 +1,14 @@
-minecraft-darkrpg 5.15.0-133-generic Ubuntu Debian 192.168.1.23
-wonderland 6.8.12-8-pve Debian Debian 192.168.1.13
-server1 5.14.0-503.26.1.el9_5.x86_64 RedHat RedHat 192.168.1.32
-server2 5.14.0-503.26.1.el9_5.x86_64 RedHat RedHat 192.168.1.37
-homeassistant 6.8.12-8-pve Debian Debian 192.168.1.25
-docker02 6.8.12-8-pve Debian Debian 192.168.1.48
-plex 6.8.12-8-pve Ubuntu Debian 192.168.1.26
-NextCloud 6.8.12-8-pve Debian Debian 192.168.1.30
-technitiumdns 6.8.12-8-pve Debian Debian 192.168.1.200
-fileserver02 6.8.12-8-pve Debian Debian 192.168.1.7
-octiprint 6.8.0-55-generic Ubuntu Debian 192.168.1.24
-minecraft-ddss 6.8.0-55-generic Ubuntu Debian 192.168.1.22
-ansible02 6.8.12-8-pve Debian Debian 192.168.1.8
-docker 6.8.12-8-pve Debian Debian 192.168.1.27
-minecraft-ddss 6.8.0-57-generic Ubuntu Debian 192.168.1.22
+octiprint 6.8.0-58-generic Ubuntu Debian 28% 31G 192.168.1.24
+wonderland 6.8.12-8-pve Debian Debian 39% 68G 192.168.1.13
+server1 5.14.0-503.38.1.el9_5.x86_64 RedHat RedHat 38% 29G 192.168.1.32
+server2 5.14.0-503.33.1.el9_5.x86_64 RedHat RedHat 10% 29G 192.168.1.37
+pdm 6.8.12-5-pve Debian Debian 4% 53G 192.168.1.6
+docker 6.8.12-8-pve Debian Debian 49% 40G 192.168.1.27
+homeassistant 6.8.12-8-pve Debian Debian 43% 16G 192.168.1.25
+docker02 6.8.12-8-pve Debian Debian 1% 2.0T 192.168.1.48
+plex 6.8.12-8-pve Ubuntu Debian 6% 508G 192.168.1.26
+NextCloud 6.8.12-8-pve Debian Debian 2% 5.9T 192.168.1.30
+technitiumdns 6.8.12-8-pve Debian Debian 40% 2.0G 192.168.1.200
+fileserver02 6.8.12-8-pve Debian Debian 35% 1000G 192.168.1.7
+ansible02 6.8.12-8-pve Debian Debian 12% 16G 192.168.1.8
+minecraft-darkrpg 5.15.0-136-generic Ubuntu Debian 50% 62G 192.168.1.23

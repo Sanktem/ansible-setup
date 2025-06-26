@@ -1,0 +1,20 @@
+- name: Check only the percent disk space used
+  hosts: all
+  gather_facts: no
+  tasks:
+    - name: Get disk usage for root filesystem
+      command: df -h /
+      register: disk_usage
+
+    - name: Extract percent used from df output
+      set_fact:
+        percent_used: "{{ disk_usage.stdout_lines[1].split()[4] }}"
+
+    - name: Extract total from df output
+      set_fact:
+        total_disk: "{{ disk_usage.stdout_lines[1].split()[1]}}"
+
+    - name: Show only the percent used
+      debug:
+        msg: "Percent used: {{ percent_used }} Total Space {{ total_disk }}"
+
