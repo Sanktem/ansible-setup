@@ -5,5 +5,5 @@ chat_id.txt
 chat_id.yml
 pass.txt
 ./inventory-site/node_modules/
-./files/smbcreds
 logfile.txt
+smbcreds

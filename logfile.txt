@@ -12,3 +12,4 @@ technitiumdns 6.8.12-8-pve Debian Debian 40% 2.0G 192.168.1.200
 fileserver02 6.8.12-8-pve Debian Debian 35% 1000G 192.168.1.7
 ansible02 6.8.12-8-pve Debian Debian 12% 16G 192.168.1.8
 minecraft-darkrpg 5.15.0-136-generic Ubuntu Debian 50% 62G 192.168.1.23
+minecraft-ddss 6.8.0-60-generic Ubuntu Debian 71% 250G 192.168.1.22
