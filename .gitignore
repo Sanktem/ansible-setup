@@ -7,3 +7,4 @@ pass.txt
 ./inventory-site/node_modules/
 logfile.txt
 smbcreds
+./passwords
