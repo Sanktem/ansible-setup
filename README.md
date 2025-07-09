@@ -8,10 +8,17 @@ This is just a collection of ansible playbooks and a website that displays info.
 - [X] Migrate the ansible server to a cleaner server
 - [X] Migrate the file server to a cleaner server
 - [ ] Create a better shell config and create a playbook to deploy it
-- [ ] Build a better notification server
+- [X] Build a better notification server
 - [ ] Fix the IP address's of all the servers
 - [ ] Finish the playbook to check the status of the gtnh server
-- [ ] Add a page to the website to add a task to run
+- [X] Add a page to the website to add a task to run
+- [ ] Change the gather playbook to output to json
+
+## Updates
+
+I am removing the website at the moment so it's going to stay where it is at the moment, and not being updated, but I'm making a new one to tie in everything from all of my servers.
+
+I moved the website to github.com/sanktem/glass
 
 ### Installed packages on this server
 ```
