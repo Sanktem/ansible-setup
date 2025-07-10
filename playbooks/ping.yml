@@ -1,16 +1,18 @@
----
 - name: ping all hosts
   gather_facts: false
-  hosts: all
+  hosts: localhost
   tasks:
     - name: ping a host
       ping:
 
-    - name: Send a message
-      ansible.builtin.shell:
-        cmd: bash send_telegram.sh "Pings are complete"
-        chdir: ~/ansible-setup
-      delegate_to: localhost
+    - name: Send a message using gotify
+      uri:
+        url: "http://192.168.1.165/message?token=AMl7hO.nIoxOior"
+        method: POST
+        body_format: json
+        body:
+          title: Hello World
+          message: "Hello from Ansible via Gotify"
       run_once: true
     
 

@@ -136,6 +136,15 @@
     },
     {
         "distribution": "Debian",
+        "hostname": "gotify",
+        "ip_address": "192.168.1.50",
+        "kernel": "6.8.12-8-pve",
+        "os_family": "Debian",
+        "percent_used": "22%",
+        "total_disk": "2.0G"
+    },
+    {
+        "distribution": "Debian",
         "hostname": "webserver01",
         "ip_address": "192.168.1.129",
         "kernel": "6.8.12-8-pve",
