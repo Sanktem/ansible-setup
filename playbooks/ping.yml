@@ -1,6 +1,6 @@
 - name: ping all hosts
   gather_facts: false
-  hosts: localhost
+  hosts: all
   tasks:
     - name: ping a host
       ping:
@@ -11,8 +11,6 @@
         method: POST
         body_format: json
         body:
-          title: Hello World
-          message: "Hello from Ansible via Gotify"
+          title: Pings Complete
+          message: "I have ran a ping on all devices and they have completed"
       run_once: true
-    
-

@@ -1,28 +1,38 @@
 - name: Checks if the minecraft server is online, and if not starts it
-  hosts: vm
+  hosts: 192.168.1.22
   gather_facts: false
   become: true
   tasks:
     - name: check if the server is online
-      community.general.pids:
-        name: java
-      register: mc_server_status
+      shell:
+        cmd: top -n 1 | grep java
+      register: java_process
 
-    - debug:
-        var: mc_server_status.status.ActiveState
+    - name: Report Java status
+      debug:
+        msg: "Java is running on this host."
+      when: java_process.stdout != "" # Check if the stdout is not empty (PIDs found)
 
-    - name: let me know that the server is not running
-      ansible.builtin.shell:
-        cmd: bash send_telegram.sh "GTNH is not running going to try to start the server"
-        chdir: ~/ansible-setup
-      delegate_to: localhost
-      when: mc_server_status.status.ActiveState = "inactive"
+    - name: Report Java not running
+      debug:
+        msg: "Java is NOT running on this host."
+      when: java_process.stdout == ""
+
+    - name: Send a message using gotify
+      uri:
+        url: "http://192.168.1.165/message?token=AtESon29Haujiza"
+        method: POST
+        body_format: json
+        body:
+          title: GTNH server is not running
+          message: "The GTNH server is not running, but I am going to try to restart it"
+      when: java_process.stdout == ""
       run_once: true
 
     - name: try to start the server
-      ansible.builtin.shell:
+      shell:
         cmd: bash startserver-java9.sh
-        chdir: /home/sanktem/gregging
+        chdir: /home/sanktem/2greg4greg
       delegate_to: 192.168.1.22
-      when: mc_server_status.status.ActiveState = "inactive"
+      when: java_process.stdout == ""
       run_once: true
