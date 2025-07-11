@@ -19,15 +19,6 @@
     },
     {
         "distribution": "Ubuntu",
-        "hostname": "octiprint",
-        "ip_address": "192.168.1.24",
-        "kernel": "6.8.0-58-generic",
-        "os_family": "Debian",
-        "percent_used": "28%",
-        "total_disk": "31G"
-    },
-    {
-        "distribution": "Ubuntu",
         "hostname": "minecraft-ddss",
         "ip_address": "192.168.1.22",
         "kernel": "6.8.0-63-generic",
@@ -160,5 +151,14 @@
         "os_family": "Debian",
         "percent_used": "51%",
         "total_disk": "2.0G"
+    },
+    {
+        "distribution": "Debian",
+        "hostname": "audiobookshelf",
+        "ip_address": "192.168.1.166",
+        "kernel": "6.8.12-8-pve",
+        "os_family": "Debian",
+        "percent_used": "16%",
+        "total_disk": "4.0G"
     }
 ]

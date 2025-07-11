@@ -1,6 +1,6 @@
 - name: Check only the percent disk space used
+  gather_facts: yes
   hosts: all
-  gather_facts: no
   tasks:
     - name: Get disk usage for root filesystem
       command: df -h /
@@ -16,5 +16,15 @@
 
     - name: Show only the percent used
       debug:
-        msg: "Percent used: {{ percent_used }} Total Space {{ total_disk }}"
+        msg: "HostName: {{ ansible_hostname }} Percent used: {{ percent_used }} Total Space {{ total_disk }}"
 
+    - name: notify of diskspace used at  > 90
+      uri:
+        url: "http://192.168.1.165/message?token=AMl7hO.nIoxOior"
+        method: POST
+        body_format: json
+        body:
+          title: "{{ ansible_hostname }} over 90% usage"
+          message: "The device {{ ansible_hostname }} is using {{ percent_used }} of disk space out of {{ total_disk }} you might want to fix that"
+      run_once: false
+      when: percent_used[:-1] | int > 90
