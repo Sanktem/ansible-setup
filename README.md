@@ -9,10 +9,12 @@ This is just a collection of ansible playbooks and a website that displays info.
 - [X] Migrate the file server to a cleaner server
 - [ ] Create a better shell config and create a playbook to deploy it
 - [X] Build a better notification server
-- [ ] Fix the IP address's of all the servers
-- [ ] Finish the playbook to check the status of the gtnh server
+- [X] Fix the IP address's of all the servers
+- [X] Finish the playbook to check the status of the gtnh server
+    - I added a service for the server to run automatically, but there is also now a playbook to check
 - [X] Add a page to the website to add a task to run
-- [ ] Change the gather playbook to output to json
+- [X] Change the gather playbook to output to json
+- [ ] Create a playbook to check if a device's disk usage is above 90% usage, and let me know
 
 ## Updates
 
