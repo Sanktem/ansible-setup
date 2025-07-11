@@ -30,7 +30,7 @@
         "distribution": "Ubuntu",
         "hostname": "minecraft-ddss",
         "ip_address": "192.168.1.22",
-        "kernel": "6.8.0-60-generic",
+        "kernel": "6.8.0-63-generic",
         "os_family": "Debian",
         "percent_used": "71%",
         "total_disk": "250G"
@@ -50,7 +50,7 @@
         "ip_address": "192.168.1.32",
         "kernel": "5.14.0-503.38.1.el9_5.x86_64",
         "os_family": "RedHat",
-        "percent_used": "38%",
+        "percent_used": "39%",
         "total_disk": "29G"
     },
     {
@@ -122,7 +122,7 @@
         "ip_address": "192.168.1.200",
         "kernel": "6.8.12-8-pve",
         "os_family": "Debian",
-        "percent_used": "41%",
+        "percent_used": "43%",
         "total_disk": "2.0G"
     },
     {
@@ -137,10 +137,10 @@
     {
         "distribution": "Debian",
         "hostname": "gotify",
-        "ip_address": "192.168.1.50",
+        "ip_address": "192.168.1.165",
         "kernel": "6.8.12-8-pve",
         "os_family": "Debian",
-        "percent_used": "22%",
+        "percent_used": "26%",
         "total_disk": "2.0G"
     },
     {
