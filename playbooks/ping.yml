@@ -9,7 +9,7 @@
 
     - name: Send a message using gotify
       uri:
-        url: "http://192.168.1.165/message?token={{ gotify_token_ansible }}"
+        url: "{{ full_gotify_token_ansible }}"
         method: POST
         body_format: json
         body:
