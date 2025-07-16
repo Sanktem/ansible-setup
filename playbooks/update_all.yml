@@ -1,12 +1,13 @@
----
 - hosts: vm container
   become: true
   become_user: root
+  vars_files:
+    - /root/ansible-setup/passwords/secrets.yml
   tasks:
 
   - name: Starting updates notification
     uri:
-      url: "http://192.168.1.165/message?token=AMl7h0.nIox0ior"
+      url: "http://192.168.1.165/message?token={{ gotify_ansible_token }}"
       method: POST
       body_formay: json
       body:
@@ -57,7 +58,7 @@
 
   - name: Notify Updates complete
     uri:
-      url: "http://192.168.1.165/message?token=AMl7h0.nIox0ior"
+      url: "http://192.168.1.165/message?token={{ gotify_token_ansible }}"
       method: POST
       body_format: json
       body:

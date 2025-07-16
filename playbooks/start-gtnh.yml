@@ -2,6 +2,8 @@
   hosts: 192.168.1.22
   gather_facts: false
   become: true
+  vars_files:
+    - /root/ansible-setup/passwords/secrets.yml
   tasks:
     - name: check if the server is online
       shell:
@@ -20,7 +22,7 @@
 
     - name: Send a message using gotify
       uri:
-        url: "http://192.168.1.165/message?token=AtESon29Haujiza"
+        url: "http://192.168.1.165/message?token={{ gotify_token_gtnh }}"
         method: POST
         body_format: json
         body:
