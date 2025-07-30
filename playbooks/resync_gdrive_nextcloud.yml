@@ -1,0 +1,13 @@
+- name: Resync gdrive and sync nextcloud user
+  hosts: 192.168.1.30
+  become: true
+  gather_facts: no
+  tasks:
+    - name: syncing the gdrive This will delete any changed files
+      command: rclone sync gdrive:"Shared_Files" /var/www/nextcloud-data/Sanktem/files/crap/Even\ Worse\ Crap/gdrive
+
+    - name: sycn the database for the user
+      command: sudo -u www-data pup occ files:scan Sanktem
+      args:
+        chdir: /var/www/nextcloud
+        

@@ -1,6 +1,6 @@
 *.ini
 pass.txt
 ./inventory-site/node_modules/
-smbcreds
 ./passwords/*
+./passwords
 logfile.*
