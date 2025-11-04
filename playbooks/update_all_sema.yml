@@ -1,0 +1,65 @@
+- hosts: vm container
+  become: true
+  become_user: root
+  tasks:
+
+  - name: Starting updates notification
+    uri:
+      url: "{{ full_gotify_token_ansible }}"
+      method: POST
+      body_format: json
+      body:
+        title: Starting update
+        message: "I am starting updates on all VMS and Continers except for the speical ones"
+    run_once: true
+
+  - name: Update all installed packages using dnf module
+    dnf:
+      name: '*'
+      state: latest
+      update_cache: yes
+      update_only: yes
+    register: dnf_update_status
+    when: ansible_facts['os_family'] == "RedHat"
+
+  - name: Remove dnf packates not needed anymore
+    dnf:
+      autoremove: yes
+    when: ansible_facts['os_family'] == "RedHat"
+
+  - name: Update all installed packages using APT module
+    apt:
+      name: '*'
+      state: latest
+      update_cache: yes
+      only_upgrade: yes
+    register: apt_update_status
+    when: ansible_facts['os_family'] == "Debian"
+
+  - name: Remove packages not needed anymore
+    apt:
+      autoremove: yes
+    when: ansible_facts['os_family'] == "Debian"
+
+  - name: Check Reboot if necessary
+    register: reboot_required_file
+    stat: path=/var/run/reboot-required get_md5=no
+
+  - name: Reboot if needed
+    reboot:
+      msg: "Reboot needed do not resist"
+      connect_timeout: 5
+      reboot_timeout: 300
+      pre_reboot_delay: 0
+      test_command: uptime
+    when: reboot_required_file.stat.exists
+
+  - name: Notify Updates complete
+    uri:
+      url: "{{ full_gotify_token_ansible }}"
+      method: POST
+      body_format: json
+      body:
+        title: Updates Complete
+        message: "I have compleated running updates on all normal VMs"
+    run_once: true

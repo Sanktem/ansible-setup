@@ -1,0 +1,16 @@
+- name: ping all hosts
+  gather_facts: false
+  hosts: all
+  tasks:
+    - name: ping a host
+      ping:
+
+    - name: Send a message using gotify
+      uri:
+        url: "{{ full_gotify_token_ansible }}"
+        method: POST
+        body_format: json
+        body:
+          title: Pings Complete
+          message: "I have ran a ping on all devices and they have completed"
+      run_once: true
