@@ -7,12 +7,12 @@
 
   - name: Starting updates notification
     uri:
-      url: "http://192.168.1.165/message?token={{ gotify_ansible_token }}"
+      url: "{{ full_gotify_token_ansible }}"
       method: POST
-      body_formay: json
+      body_format: json
       body:
         title: Starting update
-        message: I am starting updates on all VMS and Continers except for the speical ones
+        message: "I am starting updates on all VMS and Continers except for the speical ones"
     run_once: true
 
   - name: Update all installed packages using dnf module
@@ -58,7 +58,7 @@
 
   - name: Notify Updates complete
     uri:
-      url: "http://192.168.1.165/message?token={{ gotify_token_ansible }}"
+      url: "{{ full_gotify_token_ansible }}"
       method: POST
       body_format: json
       body:

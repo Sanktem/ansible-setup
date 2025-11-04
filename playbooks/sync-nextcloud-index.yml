@@ -1,8 +1,8 @@
 - name: sync nextcloud search index
-  host: 192.168.1.30
+  hosts: 192.168.1.30
   gather_facts: true
   tasks:
     - name: run the sync command
-      command: sudo -u www-data php occ fulltextsearch:index
+      command: sudo -u www-data php /var/www/nextcloud/occ fulltextsearch:index
       args:
         chdir: /var/www/nextcloud

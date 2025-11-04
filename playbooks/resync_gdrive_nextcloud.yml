@@ -7,7 +7,7 @@
       command: rclone sync gdrive:"Shared_Files" /var/www/nextcloud-data/Sanktem/files/crap/Even\ Worse\ Crap/gdrive
 
     - name: sycn the database for the user
-      command: sudo -u www-data pup occ files:scan Sanktem
+      command: sudo -u www-data php /var/www/nextcloud/occ files:scan Sanktem
       args:
         chdir: /var/www/nextcloud
         

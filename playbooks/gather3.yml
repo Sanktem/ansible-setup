@@ -3,8 +3,6 @@
   vars:
     logfile: "../logfile.json"
     loghost: "localhost"
-  vars_files:
-    - /root/ansible-setup/passwords/secrets.yml
   tasks:
 
     - name: Get disk usage for root filesystem
