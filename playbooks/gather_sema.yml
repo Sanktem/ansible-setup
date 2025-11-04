@@ -1,0 +1,48 @@
+- name: Gather_Facts_2
+  hosts: all
+  vars:
+    logfile: "../logfile.json"
+    loghost: "localhost"
+  tasks:
+
+    - name: Get disk usage for root filesystem
+      command: df -h /
+      register: disk_usage
+
+    - name: Extract percent used from df output
+      set_fact:
+        percent_used: "{{ disk_usage.stdout_lines[1].split()[4] }}"
+
+    - name: Extract total from df output
+      set_fact:
+        total_disk: "{{ disk_usage.stdout_lines[1].split()[1] }}"
+
+    - name: Build host info dictionary
+      set_fact:
+        host_info:
+          hostname: "{{ ansible_hostname }}"
+          kernel: "{{ ansible_kernel }}"
+          distribution: "{{ ansible_distribution }}"
+          os_family: "{{ ansible_os_family }}"
+          percent_used: "{{ percent_used }}"
+          total_disk: "{{ total_disk }}"
+          ip_address: "{{ ansible_default_ipv4.address }}"
+
+    - name: Collect all host info and write to JSON (delegated)
+      copy:
+        content: "{{ groups['all'] | map('extract', hostvars, 'host_info') | list | to_nice_json }}"
+        dest: "{{ logfile }}"
+        mode: '0644'
+      delegate_to: "{{ loghost }}"
+      run_once: true
+
+    - name: notify of diskspace used at  > 90
+      uri:
+        url: "{{ full_gotify_token_ansible }}"
+        method: POST
+        body_format: json
+        body:
+          title: "{{ ansible_hostname }} over 90% usage"
+          message: "The device {{ ansible_hostname }} is using {{ percent_used }} of disk space out of {{ total_disk }} you might want to fix that"
+      run_once: false
+      when: percent_used[:-1] | int > 90
