@@ -1,0 +1,34 @@
+- name: Deploy User Settings, for setting up my shell and vim on all clients
+  gather_facts: false
+  hosts: all
+  tasks:
+    - name: Install packages vim git fish
+      ansible.builtin.package:
+        name: 
+          - vim 
+          - git 
+          - fish
+        state: present
+
+    - name: Change the root user shell to fish
+      become: yes
+      user:
+        name: root
+        shell: /usr/bin/fish
+
+    - name: Clone the amix/vimrc repository
+      ansible.builtin.git:
+        repo: https://github.com/amix/vimrc.git
+        dest: /opt/vim_runtime
+        depth: 1  # Corresponds to --depth=1
+        clone: yes
+        update: yes # Set to 'yes' if you want to pull changes on subsequent runs
+
+    - name:  Install vimrc root
+      ansible.builtin.shell:
+        cmd: bash /opt/vim_runtime/install_awesome_parameterized.sh /opt/vim_runtime root sanktem
+        chdir: /opt/vim_runtime
+      args:
+        creates: /root/.vimrc
+      register: specific_install_result
+      changed_when: specific_install_result.rc == 0

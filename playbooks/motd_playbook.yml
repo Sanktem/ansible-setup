@@ -1,0 +1,23 @@
+- name: Deploy Static Login MOTD File
+  hosts: all
+  # MANDATORY: Ensures facts are gathered so they can be used in the template
+  gather_facts: yes 
+  become: yes
+  tasks:
+    - name: Fetch details of the last user login
+      shell: "last -1 | grep -v 'reboot' | head -n 1"
+      register: last_login_result
+
+    - name: Deploy the static MOTD from template to /etc/motd
+      template:
+        src: static_motd.j2
+        dest: /etc/motd
+        owner: root
+        group: root
+        mode: '0644' # Standard permissions for MOTD file
+      notify: Check Deployment
+
+  handlers:
+    - name: Check Deployment
+      debug:
+        msg: "Static MOTD deployed to /etc/motd. Note: Data is current as of the last playbook run."
