@@ -1,0 +1,32 @@
+- name: Adds the New Host to Inventory
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  vars:
+    ansible_user: "root" # e.g., 'root', 'ec2-user', 'azureuser'
+    target_host: ""
+
+  tasks:
+    - name: Fail if target_host variable is not provided
+      ansible.builtin.fail:
+        msg: "The 'target_host' variable must be set. Use -e 'target_host=<IP_ADDRESS>'."
+      when: target_host == ""
+
+    - name: Add the new server to the in-memory inventory
+      # This makes the new host available for the subsequent imported playbooks
+      ansible.builtin.add_host:
+        name: "{{ target_host }}"
+        groups: new_servers
+        ansible_host: "{{ target_host }}"
+        ansible_user: "{{ ansible_user }}"
+        # Set become true for the initial setup steps
+        ansible_become: true
+        # Add any other required connection vars (e.g., ansible_ssh_private_key_file)
+      changed_when: true
+
+- name: Run User Settings Playbook on the New Server
+  import_playbook: deploy_usersettings.yml
+
+- name: 03 - Run MOTD Playbook on the New Server
+  import_playbook: motd_playbook.yml
