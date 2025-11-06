@@ -22,6 +22,10 @@ I am removing the website at the moment so it's going to stay where it is at the
 
 I moved the website to github.com/sanktem/glass
 
+### Semaphore Update
+
+I added Semaphore for a better better tracking of tasks so there is now a versions of the playbooks with _\sema at the end of them because I cant have the vault files when trying to run them from there 
+
 ### Installed packages on this server
 ```
 apt install git vim curl python3-pip apache2 nodejs cifs-utils psmisc npm
