@@ -4,6 +4,8 @@
   vars:
     old_codename: bookworm
     new_codename: trixie
+  vars_files:
+    - /root/ansible-setup/passwords/secrets.yml
 
   tasks:
     - name: 1. Ensure the system is fully up-to-date on the current version
@@ -35,11 +37,11 @@
 
     - name: 6. Perform the minimal system upgrade (apt upgrade)
       ansible.builtin.shell:
-        cmd: DEBIAN_FRONTEND=noninteractive apt-get upgrade -y
+        cmd: DEBIAN_FRONTEND=noninteractive apt-get upgrade -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew"
 
     - name: 7. Perform the full distribution upgrade (apt dist-upgrade/full-upgrade)
       ansible.builtin.shell:
-        cmd: DEBIAN_FRONTEND=noninteractive apt-get dist-upgrade -y  --no-install-recommends
+        cmd: DEBIAN_FRONTEND=noninteractive apt-get dist-upgrade -y  --no-install-recommends -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew"
 
     - name: 8. Remove obsolete packages (autoremove)
       ansible.builtin.apt:
@@ -61,3 +63,13 @@
     - name: 11. Display the final version
       ansible.builtin.debug:
         msg: "Upgrade Complete. New Debian Version: {{ new_version_check.stdout }}"
+
+    - name: 12. Notify Gofify
+      uri:
+        url: "{{ full_sema_token_ansible }}"
+        method: POST
+        body_format: json
+        body:
+          title: Upgrade Complete
+          message: "I have completed the upgrade on {{ target }} and it is now on Devian Version: {{ new_version_check.stdout }}"
+      run_once: true
