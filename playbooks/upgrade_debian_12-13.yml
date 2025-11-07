@@ -1,0 +1,63 @@
+- name: Debian 12 to 13 Major Version Upgrade
+  hosts: '{{ target }}'
+  become: yes
+  vars:
+    old_codename: bookworm
+    new_codename: trixie
+
+  tasks:
+    - name: 1. Ensure the system is fully up-to-date on the current version
+      ansible.builtin.apt:
+        upgrade: full
+        update_cache: yes
+
+    - name: 2. Install apt-listchanges to review package changes (optional, but recommended)
+      ansible.builtin.apt:
+        name: apt-listchanges
+        state: present
+
+    - name: 3. Change all '{{ old_codename }}' references to '{{ new_codename }}' in sources.list
+      ansible.builtin.replace:
+        path: /etc/apt/sources.list
+        regexp: '{{ old_codename }}'
+        replace: '{{ new_codename }}'
+        backup: yes
+      register: sources_list_update
+
+    - name: 4. Display warning if sources.list was modified
+      ansible.builtin.debug:
+        msg: "The sources.list file has been updated to point to '{{ new_codename }}'. Proceed with caution."
+      when: sources_list_update.changed
+
+    - name: 5. Update the package cache for the new release
+      ansible.builtin.apt:
+        update_cache: yes
+
+    - name: 6. Perform the minimal system upgrade (apt upgrade)
+      ansible.builtin.shell:
+        cmd: DEBIAN_FRONTEND=noninteractive apt-get upgrade -y
+
+    - name: 7. Perform the full distribution upgrade (apt dist-upgrade/full-upgrade)
+      ansible.builtin.shell:
+        cmd: DEBIAN_FRONTEND=noninteractive apt-get dist-upgrade -y  --no-install-recommends
+
+    - name: 8. Remove obsolete packages (autoremove)
+      ansible.builtin.apt:
+        autoremove: yes
+
+    - name: 9. Reboot the server to load the new kernel and components
+      ansible.builtin.reboot:
+        reboot_timeout: 600
+
+    - name: 10. Verification Check the new Debian version after reboot
+      ansible.builtin.shell:
+        cmd: cat /etc/debian_version
+      register: new_version_check
+      # Delay is sometimes needed for the reboot task to fully finish
+      delay: 5
+      retries: 5
+      until: new_version_check is succeeded
+
+    - name: 11. Display the final version
+      ansible.builtin.debug:
+        msg: "Upgrade Complete. New Debian Version: {{ new_version_check.stdout }}"
