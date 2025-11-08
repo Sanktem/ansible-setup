@@ -1,6 +1,4 @@
 *.ini
 pass.txt
-./inventory-site/node_modules/
-./passwords/*
-./passwords
+passwords/
 logfile.*

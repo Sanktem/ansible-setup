@@ -1,0 +1,21 @@
+- name: Set system timezone to America/Chicago
+  hosts: all
+  become: yes # Required to make system-level changes
+
+  tasks:
+    - name: Ensure the timezone is set to America/Chicago
+      ansible.builtin.timezone:
+        name: America/Chicago
+      register: timezone_set_result
+
+    - name: Confrim current timzone
+      ansible.builtin.command: timedatectl status
+      register: timezone_status
+      changed_when: false
+
+    - name: Report current timezone
+      ansible.builtin.debug:
+        msg: |
+          Timezone setting change status: {{ "Changed" if timezone_set_result.changed else "No change needed" }}
+          Current system timezone status:
+          {{ timezone_status.stdout }}

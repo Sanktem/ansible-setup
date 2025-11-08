@@ -1,0 +1,76 @@
+{% set root_mount = ansible_mounts | selectattr('mount', 'equalto', '/') | list | first | default({}) %}
+{% set usage_percent = 0 %}
+
+{# Define ANSI Color Codes #}
+{% set RED = "\033[0;31m" %}
+{% set YELLOW = "\033[0;33m" %}
+{% set GREEN = "\033[0;32m" %}
+{% set CYAN_BOLD = "\033[1;36m" %}
+{% set WHITE_BOLD = "\033[1;37m" %}
+{% set BOLD = "\033[1m" %}
+{% set NC = "\033[0m" %}
+
+{# --- Jinja2 Logic to Calculate Disk Usage and Determine Color --- #}
+{% set total_size_bytes = root_mount.size_total | default(0) | int %}
+{% set available_size_bytes = root_mount.size_available | default(0) | int %}
+
+{% if total_size_bytes > 0 %}
+    {# Calculate the actual used percentage: 100 - (Available / Total * 100) #}
+    {% set usage_percent = 100 - ((available_size_bytes / total_size_bytes) * 100) | round(0, 'ceil') %}
+{% endif %}
+
+{# Set the color code for the disk usage section based on the threshold #}
+{% set disk_color_code = NC %}
+{% if usage_percent >= 90 %}
+    {% set disk_color_code = RED %}
+{% elif usage_percent >= 75 %}
+    {% set disk_color_code = YELLOW %}
+{% else %}
+    {% set disk_color_code = GREEN %}
+{% endif %}
+
+{# --- Fallback time formatting: Using simple date and time facts --- #}
+{# This avoids the problematic 'strftime' filter and is the most reliable method. #}
+{% set readable_datetime_fallback = ansible_date_time.date ~ ' at ' ~ ansible_date_time.time %}
+
+{# --- Output Generation using gathered facts and calculated variables --- #}
+{{ NC }}
+{{ CYAN_BOLD }}========================================================{{ NC }}
+         {{ WHITE_BOLD }}SYSTEM LOGIN SUMMARY{{ NC }}
+{{ CYAN_BOLD }}========================================================{{ NC }}
+  {{ BOLD }}Current Date & Time:{{ NC }} {{ readable_datetime_fallback }} ({{ ansible_date_time.tz }})
+  {{ BOLD }}Last Updated (Date):{{ NC }} {{ ansible_date_time.date }}
+
+{{ CYAN_BOLD }}--------------------------------------------------------{{ NC }}
+  {{ BOLD }}Hostname (Short):{{ NC }} {{ ansible_hostname | lower }}
+  {{ BOLD }}FQDN:{{ NC }}             {{ ansible_fqdn }}
+  {{ BOLD }}IP Address:{{ GREEN }}{{ ansible_default_ipv4.address | default('N/A') }}{{ NC }}
+  {{ BOLD }}OS Version:{{ NC }}       {{ ansible_distribution }} {{ ansible_distribution_version }} ({{ ansible_distribution_release }})
+
+{{ CYAN_BOLD }}--------------------------------------------------------{{ NC }}
+  {{ BOLD }}Last User Login Details:{{ NC }}
+  {{ last_login_result.stdout | default('No recent login data found.') | trim }}
+
+{{ CYAN_BOLD }}--------------------------------------------------------{{ NC }}
+  {{ BOLD }}Disk Usage (Root Filesystem /):{{ NC }}
+{# Check if we have a valid total size to indicate successful fact gathering #}
+{% if total_size_bytes > 0 %}
+  {{ disk_color_code }}
+  Filesystem: {{ root_mount.device | default('N/A') }}
+  {# Apply default(0) to every size accessor #}
+  Total Size: {{ (root_mount.size_total | default(0) | int / (1024*1024*1024)) | round(1, 'ceil') }} GB
+  Used:       {{ (root_mount.size_used | default(0) | int / (1024*1024*1024)) | round(1, 'ceil') }} GB
+  Available:  {{ (root_mount.size_available | default(0) | int / (1024*1024*1024)) | round(1, 'ceil') }} GB
+  Use %:      {{ usage_percent }}%
+  {{ NC }}
+
+  {% if usage_percent >= 90 %}
+  {{ RED }}{{ WHITE_BOLD }}*** WARNING: CRITICAL DISK SPACE ({{ usage_percent }}%) ***{{ NC }}
+  {% elif usage_percent >= 75 %}
+  {{ YELLOW }}{{ BOLD }}*** WARNING: HIGH DISK SPACE ({{ usage_percent }}%) ***{{ NC }}
+  {% endif %}
+{% else %}
+  Disk usage facts for the root filesystem (/) are incomplete or unavailable on this host.
+{% endif %}
+{{ CYAN_BOLD }}========================================================{{ NC }}
+{{ NC }}

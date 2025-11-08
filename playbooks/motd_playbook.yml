@@ -10,7 +10,7 @@
 
     - name: Deploy the static MOTD from template to /etc/motd
       template:
-        src: static_motd.j2
+        src: static_motd_2.j2
         dest: /etc/motd
         owner: root
         group: root
