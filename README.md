@@ -13,8 +13,9 @@ This is just a collection of ansible playbooks and a website that displays info.
 - [X] Add a page to the website to add a task to run
 - [X] Change the gather playbook to output to json
 - [X] Create a playbook to check if a device's disk usage is above 90% usage, and let me know
-- [ ] Setting up Logging for the server
-- [ ] Recreate the host files to have the vars included in the hosts files
+- [ ] Figure out Semaphore and setup the vault correctly 
+- [ ] Figure out Roles
+- [ ] Setup a playbook that can be ran on new servers to add everything that I require on the server
 
 ## Updates
 
@@ -22,14 +23,12 @@ I am removing the website at the moment so it's going to stay where it is at the
 
 I moved the website to github.com/sanktem/glass
 
+__This is somthing that I am removing as well because I started to use Semaphore, it's it's what I was trying to make but better, though I would like to be able to read the playbooks from the site__
+
 ### Semaphore Update
 
-I added Semaphore for a better better tracking of tasks so there is now a versions of the playbooks with _\sema at the end of them because I cant have the vault files when trying to run them from there 
-
-### Installed packages on this server
-```
-apt install git vim curl python3-pip apache2 nodejs cifs-utils psmisc npm
-```
+I added Semaphore for a better better tracking of tasks so there is now a versions of the playbooks with _\sema at the end of them because I cant have the vault files when trying to run them from there.
+This is something that I want to move away from, and use the vault function from the application
 
 ### Hidden File called inventory.ini, set as the following
 
