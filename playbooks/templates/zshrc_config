@@ -1,0 +1,50 @@
+# --- 1. COMPLETIONS ---
+fpath=($HOME/.zsh/zsh-completions/src $fpath)
+
+# --- 2. PROMPT ---
+eval "$(starship init zsh)"
+
+# --- 3. PLUGINS ---
+PLUGIN_DIR="$HOME/.zsh"
+source "$PLUGIN_DIR/zsh-autosuggestions/zsh-autosuggestions.zsh"
+source "$PLUGIN_DIR/zsh-history-substring-search/zsh-history-substring-search.zsh"
+source "$PLUGIN_DIR/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+
+# --- 4. FZF (FISH-LIKE CTRL+R) ---
+[ -f "$HOME/.fzf.zsh" ] && source "$HOME/.fzf.zsh"
+export FZF_DEFAULT_OPTS="--height 40% --layout=reverse --border --info=inline"
+export FZF_CTRL_R_OPTS="--sort --exact --prompt='History > '"
+
+# --- 5. TAB COMPLETION ---
+autoload -Uz compinit && compinit
+zstyle ':completion:*' menu select
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
+bindkey '^I' menu-expand-or-complete
+
+# --- 6. OPTIONS & APPEARANCE ---
+setopt AUTO_CD
+setopt HIST_IGNORE_ALL_DUPS
+setopt SHARE_HISTORY
+HISTFILE="$HOME/.zsh_history"
+HISTSIZE=10000
+SAVEHIST=10000
+# Ghosting logic: history first, then completions
+ZSH_AUTOSUGGEST_STRATEGY=(history completion)
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=8" 
+
+# --- 7. KEYBINDINGS ---
+bindkey '^[[C' forward-char             # Right arrow: accepts ghost text
+bindkey '^[[A' history-substring-search-up
+bindkey '^[[B' history-substring-search-down
+
+# WORD JUMPING (Alt+Arrows or configured Super+Arrows)
+bindkey "^[[1;5C" forward-word         # Ctrl/Super + Right
+bindkey "^[[1;5D" backward-word        # Ctrl/Super + Left
+bindkey "^[[1;3C" forward-word         # Alt + Right
+bindkey "^[[1;3D" backward-word        # Alt + Left
+bindkey '^H' backward-kill-word        # Ctrl + Backspace to delete word
+
+# --- 8. ALIASES ---
+alias ..='cd ..'
+alias ll='ls -alF'
+alias grep='grep --color=auto'

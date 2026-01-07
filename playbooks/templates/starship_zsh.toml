@@ -1,0 +1,26 @@
+add_newline = false
+format = """$username$hostname $directory$git_branch$character"""
+
+[username]
+show_always = true
+style_user = "bold blue"
+format = "[$user]($style)"
+
+[hostname]
+ssh_only = false
+style = "bold blue"
+format = "[@$hostname]($style) "
+
+[directory]
+style = "bold cyan"
+truncation_length = 3
+truncation_symbol = ".../"
+
+[git_branch]
+# symbol MUST be empty, and we remove the branch icon from the format string
+style = "bold orange"
+format = " [$branch]($style) "
+
+[character]
+success_symbol = "[>](bold green)"
+error_symbol = "[>](bold red)"

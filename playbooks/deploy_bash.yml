@@ -1,0 +1,77 @@
+---
+- name: The Ultimate Fish-like Bash Environment
+  hosts: all
+  become: yes
+  vars:
+    target_users:
+      - "root"
+      - "sanktem"
+
+  tasks:
+    - name: Verify which users exist on the system
+      getent:
+        database: passwd
+        key: "{{ item }}"
+        fail_key: no
+      loop: "{{ target_users }}"
+      register: user_check
+
+    - name: Set a list of existing users
+      set_fact:
+        existing_users: "{{ user_check.results | selectattr('ansible_facts.getent_passwd', 'defined') | map(attribute='item') | list }}"
+
+    - name: Install system dependencies
+      package:
+        name: [bash, curl, git]
+        state: present
+
+    - name: Install Starship binary
+      shell: "curl -sS https://starship.rs/install.sh | sh -s -- -y"
+      args:
+        creates: /usr/local/bin/starship
+
+    - name: Create .config directory for existing users
+      file:
+        path: "{{ (item == 'root') | ternary('/root/.config', '/home/' + item + '/.config') }}"
+        state: directory
+        owner: "{{ item }}"
+        group: "{{ item }}"
+        mode: '0755'
+      loop: "{{ existing_users }}"
+
+    - name: Deploy Starship config
+      copy:
+        src: templates/starship.toml
+        dest: "{{ (item == 'root') | ternary('/root/.config/starship.toml', '/home/' + item + '/.config/starship.toml') }}"
+        owner: "{{ item }}"
+        group: "{{ item }}"
+      loop: "{{ existing_users }}"
+
+    - name: Download Bash Autosuggestions (Ghosting letters)
+      get_url:
+        # Verified URL for tarruda/bash-autosuggestions
+        url: https://raw.githubusercontent.com/tarruda/bash-autosuggestions/master/autosuggestions.bash
+        dest: "{{ (item == 'root') | ternary('/root/.bash-autosuggestions', '/home/' + item + '/.bash-autosuggestions') }}"
+        owner: "{{ item }}"
+        group: "{{ item }}"
+        mode: '0644'
+        force: yes
+      loop: "{{ existing_users }}"
+      register: download_result
+      until: download_result is succeeded
+      retries: 3
+      delay: 5
+
+    - name: Deploy .bashrc
+      copy:
+        src: templates/fishy_bashrc
+        dest: "{{ (item == 'root') | ternary('/root/.bashrc', '/home/' + item + '/.bashrc') }}"
+        owner: "{{ item }}"
+        group: "{{ item }}"
+      loop: "{{ existing_users }}"
+
+    - name: Ensure shell is set to bash
+      user:
+        name: "{{ item }}"
+        shell: /bin/bash
+      loop: "{{ existing_users }}"

@@ -1,0 +1,111 @@
+---
+- name: Deploy Ultimate Fish-like Zsh Environment
+  hosts: all
+  become: yes
+  vars:
+    target_users:
+      - "root"
+    
+    zsh_plugins:
+      - { name: "zsh-autosuggestions", repo: "https://github.com/zsh-users/zsh-autosuggestions" }
+      - { name: "zsh-syntax-highlighting", repo: "https://github.com/zsh-users/zsh-syntax-highlighting" }
+      - { name: "zsh-history-substring-search", repo: "https://github.com/zsh-users/zsh-history-substring-search" }
+      - { name: "zsh-completions", repo: "https://github.com/zsh-users/zsh-completions" }
+
+  tasks:
+    - name: Verify which users exist
+      getent:
+        database: passwd
+        key: "{{ item }}"
+        fail_key: no
+      loop: "{{ target_users }}"
+      register: user_check
+
+    - name: Filter list to only existing users
+      set_fact:
+        existing_users: "{{ user_check.results | selectattr('ansible_facts.getent_passwd', 'defined') | map(attribute='item') | list }}"
+
+    - name: Install system dependencies
+      package:
+        name: [zsh, git, curl, tar]
+        state: present
+
+    - name: Install Starship globally
+      shell: "curl -sS https://starship.rs/install.sh | sh -s -- -y"
+      args:
+        creates: /usr/local/bin/starship
+
+    - name: Install FZF binary globally
+      shell: |
+        set -o pipefail
+        curl -sL https://github.com/junegunn/fzf/releases/download/v0.54.3/fzf-0.54.3-linux_amd64.tar.gz | tar -xz -C /usr/local/bin
+      args:
+        creates: /usr/local/bin/fzf
+        executable: /bin/bash
+
+    - name: Create required directories
+      file:
+        path: "{{ (item.0 == 'root') | ternary('/root/' + item.1, '/home/' + item.0 + '/' + item.1) }}"
+        state: directory
+        owner: "{{ item.0 }}"
+        group: "{{ item.0 }}"
+        mode: '0755'
+      loop: "{{ existing_users | product(['.config', '.zsh']) | list }}"
+
+    - name: Initialize .zsh_history file
+      file:
+        path: "{{ (item == 'root') | ternary('/root/.zsh_history', '/home/' + item + '/.zsh_history') }}"
+        state: touch
+        owner: "{{ item }}"
+        group: "{{ item }}"
+        mode: '0600'
+      loop: "{{ existing_users }}"
+      changed_when: false
+
+    - name: Clone Zsh Plugins
+      git:
+        repo: "{{ item.1.repo }}"
+        dest: "{{ (item.0 == 'root') | ternary('/root/.zsh/' + item.1.name, '/home/' + item.0 + '/.zsh/' + item.1.name) }}"
+        depth: 1
+      loop: "{{ existing_users | product(zsh_plugins) | list }}"
+
+    - name: Clone FZF repo for bindings
+      git:
+        repo: https://github.com/junegunn/fzf.git
+        dest: "{{ (item == 'root') | ternary('/root/.fzf', '/home/' + item + '/.fzf') }}"
+        depth: 1
+      loop: "{{ existing_users }}"
+
+    - name: Configure FZF bindings for users
+      shell: "{{ (item == 'root') | ternary('/root/.fzf/install', '/home/' + item + '/.fzf/install') }} --all --no-update-rc --bin"
+      become_user: "{{ item }}"
+      loop: "{{ existing_users }}"
+      failed_when: false
+
+    - name: Deploy Starship config
+      copy:
+        src: templates/starship.toml
+        dest: "{{ (item == 'root') | ternary('/root/.config/starship.toml', '/home/' + item + '/.config/starship.toml') }}"
+        owner: "{{ item }}"
+        mode: '0644'
+      loop: "{{ existing_users }}"
+
+    - name: Deploy .zshrc config
+      copy:
+        src: templates/zshrc_config
+        dest: "{{ (item == 'root') | ternary('/root/.zshrc', '/home/' + item + '/.zshrc') }}"
+        owner: "{{ item }}"
+        mode: '0644'
+      loop: "{{ existing_users }}"
+
+    - name: Set Zsh as default shell
+      user:
+        name: "{{ item }}"
+        shell: /bin/zsh
+      loop: "{{ existing_users }}"
+
+    - name: Clear Zsh completion cache
+      file:
+        path: "{{ (item == 'root') | ternary('/root/.zcompdump', '/home/' + item + '/.zcompdump') }}"
+        state: absent
+      loop: "{{ existing_users }}"

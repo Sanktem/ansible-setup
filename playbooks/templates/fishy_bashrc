@@ -1,0 +1,27 @@
+# --- 1. STARSHIP PROMPT ---
+eval "$(starship init bash)"
+
+# --- 2. GHOST TEXT AUTOSUGGESTIONS ---
+# This points to where the Ansible playbook will install the plugin
+if [ -f ~/.bash-autosuggestions ]; then
+    source ~/.bash-autosuggestions
+fi
+
+# --- 3. SMART HISTORY ---
+HISTCONTROL=ignoreboth
+shopt -s histappend
+HISTSIZE=10000
+HISTFILESIZE=20000
+
+# --- 4. FISH-LIKE KEYBINDINGS ---
+# Up/Down search history based on what is already typed
+bind '"\e[A": history-search-backward'
+bind '"\e[B": history-search-forward'
+
+# --- 5. ALIASES ---
+alias ..='cd ..'
+alias ll='ls -alF'
+lias grep='grep --color=auto'
+
+# --- 6. FZF (If installed) ---
+[ -f ~/.fzf.bash  ] && source ~/.fzf.bash
