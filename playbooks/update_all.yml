@@ -1,6 +1,8 @@
 - hosts: vm container
   become: true
   become_user: root
+  strategy: free
+  any_errors_fatal: false
   vars_files:
     - /root/ansible-setup/passwords/secrets.yml
   tasks:
@@ -12,10 +14,10 @@
       body_format: json
       body:
         title: Starting update
-        message: "I am starting updates on all VMS and Continers except for the speical ones"
+        message: "Starting updates on all VMs and containers (excluding special hosts)"
     run_once: true
 
-  - name: Update all installed packages using dnf module
+  - name: Update all installed packages (DNF)
     dnf:
       name: '*'
       state: latest
@@ -24,12 +26,19 @@
     register: dnf_update_status
     when: ansible_facts['os_family'] == "RedHat"
 
-  - name: Remove dnf packates not needed anymore
+  - name: Remove unused packages (DNF)
     dnf:
       autoremove: yes
     when: ansible_facts['os_family'] == "RedHat"
 
-  - name: Update all installed packages using APT module
+  - name: Check if reboot is needed (RedHat)
+    command: needs-restarting -r
+    register: rh_reboot_required
+    failed_when: false
+    changed_when: false
+    when: ansible_facts['os_family'] == "RedHat"
+
+  - name: Update all installed packages (APT)
     apt:
       name: '*'
       state: latest
@@ -38,30 +47,45 @@
     register: apt_update_status
     when: ansible_facts['os_family'] == "Debian"
 
-  - name: Remove packages not needed anymore
+  - name: Remove unused packages (APT)
     apt:
       autoremove: yes
     when: ansible_facts['os_family'] == "Debian"
 
-  - name: Check Reboot if necessary
-    register: reboot_required_file
-    stat: path=/var/run/reboot-required
+  - name: Check if reboot is needed (Debian)
+    stat:
+      path: /var/run/reboot-required
+    register: deb_reboot_required
+    when: ansible_facts['os_family'] == "Debian"
 
-  - name: Reboot if needed
+  - name: Reboot if needed (RedHat)
     reboot:
-      msg: "Reboot needed do not resist"
+      msg: "Reboot required after updates"
       connect_timeout: 5
       reboot_timeout: 300
       pre_reboot_delay: 0
       test_command: uptime
-    when: reboot_required_file.stat.exists
+    when:
+      - ansible_facts['os_family'] == "RedHat"
+      - rh_reboot_required.rc == 1
 
-  - name: Notify Updates complete
+  - name: Reboot if needed (Debian)
+    reboot:
+      msg: "Reboot required after updates"
+      connect_timeout: 5
+      reboot_timeout: 300
+      pre_reboot_delay: 0
+      test_command: uptime
+    when:
+      - ansible_facts['os_family'] == "Debian"
+      - deb_reboot_required.stat.exists
+
+  - name: Notify updates complete
     uri:
       url: "{{ full_gotify_token_ansible }}"
       method: POST
       body_format: json
       body:
         title: Updates Complete
-        message: "I have compleated running updates on all normal VMs"
+        message: "Updates complete on all VMs and containers"
     run_once: true
