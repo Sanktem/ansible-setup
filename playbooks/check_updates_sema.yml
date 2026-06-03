@@ -41,8 +41,6 @@
 - hosts: localhost
   gather_facts: false
   connection: local
-  vars_files:
-    - /root/ansible-setup/passwords/secrets.yml
   tasks:
 
     - name: Send Gotify update check report
