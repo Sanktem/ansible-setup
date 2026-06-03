@@ -1,0 +1,17 @@
+---
+- name: Set system timezone
+  ansible.builtin.timezone:
+    name: "{{ timezone_name }}"
+  register: timezone_set_result
+
+- name: Get current timezone status
+  ansible.builtin.command: timedatectl status
+  register: timezone_status
+  changed_when: false
+
+- name: Report timezone result
+  ansible.builtin.debug:
+    msg: |
+      Timezone setting change status: {{ "Changed" if timezone_set_result.changed else "No change needed" }}
+      Current system timezone status:
+      {{ timezone_status.stdout }}

@@ -1,0 +1,66 @@
+---
+- name: Ensure system is fully up-to-date before upgrade
+  ansible.builtin.apt:
+    upgrade: full
+    update_cache: yes
+
+- name: Install apt-listchanges
+  ansible.builtin.apt:
+    name: apt-listchanges
+    state: present
+
+- name: Replace {{ old_codename }} with {{ new_codename }} in sources.list
+  ansible.builtin.replace:
+    path: /etc/apt/sources.list
+    regexp: "{{ old_codename }}"
+    replace: "{{ new_codename }}"
+    backup: yes
+  register: sources_list_update
+
+- name: Warn if sources.list was modified
+  ansible.builtin.debug:
+    msg: "sources.list updated to '{{ new_codename }}'. Proceed with caution."
+  when: sources_list_update.changed
+
+- name: Update package cache for the new release
+  ansible.builtin.apt:
+    update_cache: yes
+
+- name: Minimal upgrade (apt upgrade)
+  ansible.builtin.shell:
+    cmd: DEBIAN_FRONTEND=noninteractive apt-get upgrade -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew"
+
+- name: Full distribution upgrade (apt dist-upgrade)
+  ansible.builtin.shell:
+    cmd: DEBIAN_FRONTEND=noninteractive apt-get dist-upgrade -y --no-install-recommends -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew"
+
+- name: Remove obsolete packages
+  ansible.builtin.apt:
+    autoremove: yes
+
+- name: Reboot into new release
+  ansible.builtin.reboot:
+    reboot_timeout: 600
+
+- name: Verify new Debian version
+  ansible.builtin.shell:
+    cmd: cat /etc/debian_version
+  register: new_version_check
+  delay: 5
+  retries: 5
+  until: new_version_check is succeeded
+
+- name: Display final version
+  ansible.builtin.debug:
+    msg: "Upgrade Complete. New Debian Version: {{ new_version_check.stdout }}"
+
+- name: Notify via Gotify on completion
+  uri:
+    url: "{{ upgrade_notify_url }}"
+    method: POST
+    body_format: json
+    body:
+      title: Upgrade Complete
+      message: "Upgrade complete. Now on Debian version: {{ new_version_check.stdout }}"
+  run_once: true
+  when: upgrade_notify_url != ""

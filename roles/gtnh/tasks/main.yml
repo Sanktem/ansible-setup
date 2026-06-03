@@ -1,0 +1,34 @@
+---
+- name: Check if Java (GTNH server) is running
+  shell:
+    cmd: top -n 1 | grep java
+  register: java_process
+  failed_when: false
+
+- name: Report Java is running
+  debug:
+    msg: "Java is running on this host."
+  when: java_process.stdout != ""
+
+- name: Report Java is not running
+  debug:
+    msg: "Java is NOT running on this host."
+  when: java_process.stdout == ""
+
+- name: Notify via Gotify that server is down
+  uri:
+    url: "http://192.168.1.165/message?token={{ gotify_token_gtnh }}"
+    method: POST
+    body_format: json
+    body:
+      title: GTNH server is not running
+      message: "The GTNH server is not running, but I am going to try to restart it"
+  when: java_process.stdout == ""
+  run_once: true
+
+- name: Attempt to start GTNH server
+  shell:
+    cmd: bash startserver-java9.sh
+    chdir: /home/sanktem/2greg4greg
+  when: java_process.stdout == ""
+  run_once: true

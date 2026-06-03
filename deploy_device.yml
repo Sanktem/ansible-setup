@@ -1,0 +1,18 @@
+---
+# Initial server setup playbook.
+#
+# Run:
+#   ansible-playbook -i inventory.ini deploy_device.yml -e 'target=<host_or_group>'
+
+- name: Initial device setup
+  hosts: "{{ target | default('all') }}"
+  become: yes
+  gather_facts: yes
+  vars_files:
+    - passwords/secrets.yml
+
+  roles:
+    - role: timezone
+    - role: shell_zsh
+    - role: motd
+    - role: vim

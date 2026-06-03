@@ -1,0 +1,6 @@
+---
+update_notify_url: ""
+update_notify_start_title: "Starting update"
+update_notify_start_message: "Starting updates on all VMs and containers"
+update_notify_complete_title: "Updates Complete"
+update_notify_complete_message: "Completed running updates on all normal VMs"

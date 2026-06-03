@@ -1,0 +1,31 @@
+---
+- name: Install vim, git, and fish
+  ansible.builtin.package:
+    name:
+      - vim
+      - git
+      - fish
+    state: present
+
+- name: Set root shell to fish
+  become: yes
+  user:
+    name: root
+    shell: /usr/bin/fish
+
+- name: Clone amix/vimrc repository
+  ansible.builtin.git:
+    repo: https://github.com/amix/vimrc.git
+    dest: /opt/vim_runtime
+    depth: 1
+    clone: yes
+    update: yes
+
+- name: Install vimrc for root
+  ansible.builtin.shell:
+    cmd: bash /opt/vim_runtime/install_awesome_parameterized.sh /opt/vim_runtime root sanktem
+    chdir: /opt/vim_runtime
+  args:
+    creates: /root/.vimrc
+  register: vimrc_install
+  changed_when: vimrc_install.rc == 0

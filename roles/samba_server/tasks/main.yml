@@ -1,0 +1,17 @@
+---
+- name: Install Samba
+  package:
+    name: samba
+    state: present
+
+- name: Create shared directory
+  file:
+    path: /srv/samba/shared
+    state: directory
+    mode: '0755'
+
+- name: Deploy smb.conf from template
+  template:
+    src: smb.conf.j2
+    dest: /etc/samba/smb.conf
+  notify: restart samba

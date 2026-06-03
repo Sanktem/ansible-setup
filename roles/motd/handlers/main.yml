@@ -1,0 +1,4 @@
+---
+- name: Check Deployment
+  debug:
+    msg: "Static MOTD deployed to /etc/motd. Note: Data is current as of the last playbook run."

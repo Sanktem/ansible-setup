@@ -1,0 +1,13 @@
+---
+- name: Ping host
+  ping:
+
+- name: Notify via Gotify that pings are complete
+  uri:
+    url: "{{ full_gotify_token_ansible }}"
+    method: POST
+    body_format: json
+    body:
+      title: Pings Complete
+      message: "I have ran a ping on all devices and they have completed"
+  run_once: true

@@ -1,0 +1,64 @@
+---
+- name: Notify start of updates
+  uri:
+    url: "{{ update_notify_url }}"
+    method: POST
+    body_format: json
+    body:
+      title: "{{ update_notify_start_title }}"
+      message: "{{ update_notify_start_message }}"
+  run_once: true
+  when: update_notify_url != ""
+
+- name: Update all packages (DNF)
+  dnf:
+    name: '*'
+    state: latest
+    update_cache: yes
+    update_only: yes
+  register: dnf_update_status
+  when: ansible_facts['os_family'] == "RedHat"
+
+- name: Remove unused packages (DNF)
+  dnf:
+    autoremove: yes
+  when: ansible_facts['os_family'] == "RedHat"
+
+- name: Update all packages (APT)
+  apt:
+    name: '*'
+    state: latest
+    update_cache: yes
+    only_upgrade: yes
+  register: apt_update_status
+  when: ansible_facts['os_family'] == "Debian"
+
+- name: Remove unused packages (APT)
+  apt:
+    autoremove: yes
+  when: ansible_facts['os_family'] == "Debian"
+
+- name: Check if reboot is required
+  stat:
+    path: /var/run/reboot-required
+  register: reboot_required_file
+
+- name: Reboot if needed
+  reboot:
+    msg: "Reboot needed do not resist"
+    connect_timeout: 5
+    reboot_timeout: 300
+    pre_reboot_delay: 0
+    test_command: uptime
+  when: reboot_required_file.stat.exists
+
+- name: Notify updates complete
+  uri:
+    url: "{{ update_notify_url }}"
+    method: POST
+    body_format: json
+    body:
+      title: "{{ update_notify_complete_title }}"
+      message: "{{ update_notify_complete_message }}"
+  run_once: true
+  when: update_notify_url != ""

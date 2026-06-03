@@ -1,0 +1,7 @@
+---
+- name: Deploy amix/vimrc to all users
+  hosts: all
+  become: true
+  gather_facts: true
+  roles:
+    - role: vim

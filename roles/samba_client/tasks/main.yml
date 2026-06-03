@@ -1,0 +1,29 @@
+---
+- name: Install cifs-utils
+  package:
+    name: cifs-utils
+    state: latest
+
+- name: Create mount point /mnt/share
+  file:
+    path: /mnt/share
+    state: directory
+    mode: '0755'
+
+- name: Copy SMB credentials file
+  copy:
+    src: smbcreds
+    dest: /opt/smbcreds
+    mode: '0600'
+
+- name: Add fileserver share to /etc/fstab
+  lineinfile:
+    path: /etc/fstab
+    line: //192.168.1.7/share /mnt/share cifs credentials=/opt/smbcreds,uid=1000,gid=1000 0 0
+
+- name: Reload systemd daemon
+  systemd_service:
+    daemon_reload: true
+
+- name: Mount all fstab entries
+  command: mount -a

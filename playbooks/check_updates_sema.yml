@@ -1,0 +1,67 @@
+- hosts: all
+  become: true
+  become_user: root
+  strategy: free
+  any_errors_fatal: false
+  gather_facts: true
+  tasks:
+
+    - name: Refresh APT cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+      when: ansible_facts['os_family'] == "Debian"
+
+    - name: Check for pending updates (APT)
+      command: apt-get --simulate --quiet upgrade
+      register: apt_check
+      changed_when: false
+      failed_when: false
+      when: ansible_facts['os_family'] == "Debian"
+
+    - name: Set update facts (Debian)
+      set_fact:
+        has_updates: "{{ (apt_check.stdout_lines | select('match', '^Inst ') | list | length) | int > 0 }}"
+        pending_updates: "{{ apt_check.stdout_lines | select('match', '^Inst ') | list | length }}"
+      when: ansible_facts['os_family'] == "Debian"
+
+    - name: Check for pending updates (DNF)
+      command: dnf check-update --quiet
+      register: dnf_check
+      changed_when: false
+      failed_when: dnf_check.rc not in [0, 100]
+      when: ansible_facts['os_family'] == "RedHat"
+
+    - name: Set update facts (RedHat)
+      set_fact:
+        has_updates: "{{ dnf_check.rc == 100 }}"
+        pending_updates: "{{ dnf_check.stdout_lines | select('match', '.+') | list | length }}"
+      when: ansible_facts['os_family'] == "RedHat"
+
+- hosts: localhost
+  gather_facts: false
+  connection: local
+  vars_files:
+    - /root/ansible-setup/passwords/secrets.yml
+  tasks:
+
+    - name: Send Gotify update check report
+      uri:
+        url: "{{ full_gotify_token_ansible }}"
+        method: POST
+        body_format: json
+        body:
+          title: "Update Check Report"
+          message: "{{ update_report }}"
+      vars:
+        update_report: |
+          {% set ns = namespace(outdated=[]) %}
+          {% for host in (groups['vm'] + groups['container']) | select('in', hostvars) %}
+          {% if hostvars[host].has_updates is defined and hostvars[host].has_updates | bool %}
+          {% set ns.outdated = ns.outdated + [host + ' (' + (hostvars[host].pending_updates | string) + ' updates)'] %}
+          {% endif %}
+          {% endfor %}
+          {% if ns.outdated | length == 0 %}All devices are up to date!
+          {% else %}{{ ns.outdated | length }} device(s) have pending updates:
+          {% for entry in ns.outdated %}- {{ entry }}
+          {% endfor %}{% endif %}

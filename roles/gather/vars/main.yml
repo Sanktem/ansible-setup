@@ -1,0 +1,3 @@
+---
+logfile: "{{ playbook_dir }}/logfile.json"
+loghost: "localhost"

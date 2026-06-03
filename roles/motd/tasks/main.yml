@@ -1,0 +1,13 @@
+---
+- name: Fetch details of the last user login
+  shell: "last -1 | grep -v 'reboot' | head -n 1"
+  register: last_login_result
+
+- name: Deploy MOTD from template
+  template:
+    src: static_motd_2.j2
+    dest: /etc/motd
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Check Deployment

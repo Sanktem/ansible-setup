@@ -1,0 +1,5 @@
+---
+- name: Run Nextcloud full-text search index sync
+  command: sudo -u www-data php /var/www/nextcloud/occ fulltextsearch:index
+  args:
+    chdir: /var/www/nextcloud

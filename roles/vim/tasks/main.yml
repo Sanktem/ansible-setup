@@ -1,0 +1,44 @@
+---
+- name: Install vim and git (RedHat)
+  yum:
+    name:
+      - vim
+      - git
+    state: latest
+  when: ansible_facts['os_family'] == "RedHat"
+
+- name: Install vim and git (Debian)
+  apt:
+    name:
+      - vim
+      - git
+    state: latest
+  when: ansible_facts['os_family'] == "Debian"
+
+- name: Install vim and git (Arch)
+  pacman:
+    name:
+      - vim
+      - git
+    state: latest
+  when: ansible_facts['os_family'] == "Archlinux"
+
+- name: Clone amix/vimrc repository to shared location
+  git:
+    repo: https://github.com/amix/vimrc.git
+    dest: /opt/vim_runtime
+    depth: 1
+    clone: yes
+    update: yes
+
+# --all installs for every user with a home directory (excludes root)
+- name: Install awesome vimrc for all users with home directories
+  ansible.builtin.shell:
+    cmd: sh /opt/vim_runtime/install_awesome_parameterized.sh /opt/vim_runtime --all
+    chdir: /opt/vim_runtime
+
+# root is excluded from --all, so install separately
+- name: Install awesome vimrc for root
+  ansible.builtin.shell:
+    cmd: sh /opt/vim_runtime/install_awesome_parameterized.sh /opt/vim_runtime root
+    chdir: /opt/vim_runtime

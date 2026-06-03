@@ -1,0 +1,9 @@
+---
+target_users:
+  - "root"
+
+zsh_plugins:
+  - { name: "zsh-autosuggestions", repo: "https://github.com/zsh-users/zsh-autosuggestions" }
+  - { name: "zsh-syntax-highlighting", repo: "https://github.com/zsh-users/zsh-syntax-highlighting" }
+  - { name: "zsh-history-substring-search", repo: "https://github.com/zsh-users/zsh-history-substring-search" }
+  - { name: "zsh-completions", repo: "https://github.com/zsh-users/zsh-completions" }
