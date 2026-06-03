@@ -5,6 +5,7 @@
   vars:
     target_users:
       - "root"
+      - "sanktem"
     
     zsh_plugins:
       - { name: "zsh-autosuggestions", repo: "https://github.com/zsh-users/zsh-autosuggestions" }

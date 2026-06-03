@@ -4,7 +4,7 @@
   gather_facts: no
   tasks:
     - name: syncing the gdrive This will delete any changed files
-      command: rclone sync gdrive:"Shared_Files" /var/www/nextcloud-data/Sanktem/files/crap/Even\ Worse\ Crap/gdrive
+      command: rclone sync gdrive:"Shared_Files" /var/www/nextcloud-data/Sanktem/files/crap/even_worse_crap/gdrive --checkers 2 --transfers 2 --tpslimit 3 --tpslimit-burst 1 --drive-pacer-min-sleep 200ms --retries 10 --low-level-retries 20 --log-level INFO -P
 
     - name: sycn the database for the user
       command: sudo -u www-data php /var/www/nextcloud/occ files:scan Sanktem
